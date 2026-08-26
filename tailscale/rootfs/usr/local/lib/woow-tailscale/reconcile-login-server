@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Reconcile the persisted Tailscale identity with the configured control server.
+# DATA_DIR defaults to /data; exactly one requested URL is required.
+if (( $# != 1 )); then
+    printf 'Usage: %s LOGIN_SERVER_URL\n' "${0##*/}" >&2
+    exit 2
+fi
+
+DATA_DIR="${DATA_DIR:-/data}"
+requested_url="$1"
+marker="${DATA_DIR}/.woow-login-server"
+state_file="${DATA_DIR}/tailscaled.state"
+state_dir="${DATA_DIR}/state"
+serve_marker="${DATA_DIR}/final_serve_reset_is_done"
+backup_dir="${DATA_DIR}/state-backups"
+marker_tmp=""
+archive_tmp=""
+
+cleanup() {
+    if [[ -n "${marker_tmp}" && -e "${marker_tmp}" ]]; then
+        rm -f -- "${marker_tmp}"
+    fi
+    if [[ -n "${archive_tmp}" && -e "${archive_tmp}" ]]; then
+        rm -f -- "${archive_tmp}"
+    fi
+}
+trap cleanup EXIT
+
+if [[ ! -d "${DATA_DIR}" ]]; then
+    printf 'Tailscale data directory does not exist: %s\n' "${DATA_DIR}" >&2
+    exit 1
+fi
+
+normalized_url="${requested_url}"
+while [[ "${normalized_url}" == */ ]]; do
+    normalized_url="${normalized_url%/}"
+done
+if [[ -z "${normalized_url}" ]]; then
+    printf 'Configured control-server URL is empty after trailing-slash normalization\n' >&2
+    exit 2
+fi
+
+path_exists() {
+    [[ -e "$1" || -L "$1" ]]
+}
+
+write_marker() {
+    marker_tmp=$(mktemp "${DATA_DIR}/.woow-login-server.XXXXXX")
+    chmod 0600 "${marker_tmp}"
+    printf '%s\n' "${normalized_url}" > "${marker_tmp}"
+    mv -f -- "${marker_tmp}" "${marker}"
+    marker_tmp=""
+}
+
+state_exists=false
+for path in "${state_file}" "${state_dir}" "${serve_marker}"; do
+    if path_exists "${path}"; then
+        state_exists=true
+        break
+    fi
+done
+
+if ! path_exists "${marker}"; then
+    if [[ "${state_exists}" == true ]]; then
+        printf 'Refusing control-server migration: existing Tailscale state has no %s marker; state was not changed\n' \
+            "${marker}" >&2
+        exit 20
+    fi
+
+    write_marker
+    printf 'Recorded Tailscale control server: %s\n' "${normalized_url}"
+    exit 0
+fi
+
+if [[ ! -f "${marker}" ]]; then
+    printf 'Refusing control-server migration: marker is not a regular file: %s\n' "${marker}" >&2
+    exit 1
+fi
+
+recorded_url=$(<"${marker}")
+if [[ "${recorded_url}" == "${normalized_url}" ]]; then
+    exit 0
+fi
+
+archive_items=()
+if path_exists "${state_file}"; then
+    archive_items+=(tailscaled.state)
+fi
+if path_exists "${state_dir}"; then
+    archive_items+=(state)
+fi
+if path_exists "${serve_marker}"; then
+    archive_items+=(final_serve_reset_is_done)
+fi
+
+if (( ${#archive_items[@]} == 0 )); then
+    write_marker
+    printf 'Reconciled Tailscale control server to %s; no state backup was needed\n' "${normalized_url}"
+    exit 0
+fi
+
+umask 077
+if path_exists "${backup_dir}"; then
+    if [[ -L "${backup_dir}" || ! -d "${backup_dir}" ]]; then
+        printf 'Refusing control-server migration: backup path is not a real directory: %s\n' \
+            "${backup_dir}" >&2
+        exit 1
+    fi
+else
+    mkdir -p -- "${backup_dir}"
+fi
+if [[ -L "${backup_dir}" || ! -d "${backup_dir}" ]]; then
+    printf 'Refusing control-server migration: backup path is not a real directory: %s\n' \
+        "${backup_dir}" >&2
+    exit 1
+fi
+chmod 0700 "${backup_dir}"
+
+archive_tmp=$(mktemp "${backup_dir}/.control-server-state.XXXXXX")
+chmod 0600 "${archive_tmp}"
+tar -C "${DATA_DIR}" -czf "${archive_tmp}" -- "${archive_items[@]}"
+tar -tzf "${archive_tmp}" > /dev/null
+
+# Link publication is atomic and fails rather than replacing an existing archive.
+timestamp=$(date -u +%Y%m%dT%H%M%SZ)
+archive_index=0
+while :; do
+    if (( archive_index == 0 )); then
+        archive="${backup_dir}/${timestamp}-control-server-state.tar.gz"
+    else
+        archive="${backup_dir}/${timestamp}-control-server-state-${archive_index}.tar.gz"
+    fi
+
+    if path_exists "${archive}"; then
+        ((archive_index += 1))
+        continue
+    fi
+    if ln "${archive_tmp}" "${archive}"; then
+        rm -f -- "${archive_tmp}"
+        archive_tmp=""
+        break
+    fi
+    if path_exists "${archive}"; then
+        ((archive_index += 1))
+        continue
+    fi
+    printf 'Unable to publish control-server state backup\n' >&2
+    exit 1
+done
+
+for path in "${state_file}" "${state_dir}" "${serve_marker}"; do
+    if path_exists "${path}"; then
+        rm -rf -- "${path}"
+    fi
+done
+write_marker
+
+shopt -s nullglob
+archives=("${backup_dir}"/????????T??????Z-control-server-state*.tar.gz)
+IFS=$'\n' archives=($(printf '%s\n' "${archives[@]}" | LC_ALL=C sort))
+unset IFS
+while (( ${#archives[@]} > 3 )); do
+    rm -f -- "${archives[0]}"
+    archives=("${archives[@]:1}")
+done
+
+printf 'Reconciled Tailscale control server to %s; saved state backup %s\n' \
+    "${normalized_url}" "${archive##*/}"

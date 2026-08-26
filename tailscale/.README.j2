@@ -1,0 +1,72 @@
+# Woow Tailscale Home Assistant Add-on
+
+[![Release][release-shield]][release] ![Project Stage][project-stage-shield] ![Project Maintenance][maintenance-shield]
+
+[![WOOWTECH App Store][repository-shield]][repository] [![Open this add-on][addon-shield]][addon]
+
+[![Support][support-shield]][issues]
+
+Zero config VPN for building secure networks.
+
+> **Upstream attribution:** This WOOWTECH-maintained add-on is based on
+> [`hassio-addons/app-tailscale`](https://github.com/hassio-addons/app-tailscale)
+> at upstream commit `24464c97a779bdd64c9975f514bff6e1d9058cca`.
+
+## About
+
+Tailscale is a zero config VPN, which installs on any device in minutes,
+including your Home Assistant instance.
+
+Create a secure network between your servers, computers, and cloud instances.
+Even when separated by firewalls or subnets, Tailscale just works. Tailscale
+manages firewall rules for you, and works from anywhere you are.
+
+{% if channel == "edge" %}
+## WARNING! THIS IS AN EDGE VERSION!
+
+This Home Assistant Apps repository contains edge builds of apps.
+Edge builds apps are based upon the latest development version.
+
+- They may not work at all.
+- They might stop working at any time.
+- They could have a negative impact on your system.
+
+This repository was created for:
+
+- Anybody willing to test.
+- Anybody interested in trying out upcoming apps or app features.
+- Developers.
+
+If you are more interested in stable releases of our apps:
+
+<https://github.com/WOOWTECH/Woow_HA_App_Store>
+
+{% endif %}
+{% if channel == "beta" %}
+## WARNING! THIS IS A BETA VERSION!
+
+This Home Assistant Apps repository contains beta releases of apps.
+
+- They might stop working at any time.
+- They could have a negative impact on your system.
+
+This repository was created for:
+
+- Anybody willing to test.
+- Anybody interested in trying out upcoming apps or app features.
+
+If you are more interested in stable releases of our apps:
+
+<https://github.com/WOOWTECH/Woow_HA_App_Store>
+
+{% endif %}
+[addon-shield]: https://my.home-assistant.io/badges/supervisor_addon.svg
+[addon]: https://my.home-assistant.io/redirect/supervisor_addon/?addon=woow-tailscale&repository_url=https%3A%2F%2Fgithub.com%2FWOOWTECH%2FWoow_HA_App_Store
+[issues]: https://github.com/WOOWTECH/Woow_HA_App_Store/issues
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg
+[project-stage-shield]: https://img.shields.io/badge/project%20stage-experimental-yellow.svg
+[release-shield]: https://img.shields.io/badge/version-{{ version }}-blue.svg
+[release]: https://github.com/WOOWTECH/Woow_HA_App_Store/releases
+[repository-shield]: https://img.shields.io/badge/WOOWTECH-App%20Store-blue.svg
+[repository]: https://github.com/WOOWTECH/Woow_HA_App_Store
+[support-shield]: https://img.shields.io/badge/support-GitHub%20Issues-blue.svg
