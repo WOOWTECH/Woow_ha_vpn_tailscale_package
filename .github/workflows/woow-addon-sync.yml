@@ -6,6 +6,11 @@ name: WOOW addon source notification
   workflow_dispatch: {}
   schedule:
   - cron: 23 */6 * * *
+  workflow_run:
+    workflows:
+    - Build
+    types:
+    - completed
 permissions:
   contents: write
   actions: read
@@ -23,7 +28,7 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         repository: WOOWTECH/Woow_HA_App_Store
-        ref: 26bb83db3b28db67c33b13350f3be6cddc880527
+        ref: 6d437df9015b279ebd2ba465382241fb1bb7f21b
         path: tooling
         sparse-checkout: .addon-sync
         persist-credentials: false

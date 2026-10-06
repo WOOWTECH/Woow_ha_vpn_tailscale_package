@@ -45,7 +45,7 @@
 - Upstream Tailscale：[`tailscale/tailscale`](https://github.com/tailscale/tailscale)（BSD-3-Clause）
 - 打包基礎：[`hassio-addons/addon-tailscale`](https://github.com/hassio-addons/addon-tailscale)（Apache-2.0）— s6-overlay service 樹、AppArmor profile、magicdns proxy 與 login-server reconcile 腳本
 - 姊妹倉：[`WOOWTECH/Woow_ha_vpn_headscale_package`](https://github.com/WOOWTECH/Woow_ha_vpn_headscale_package)（自架 Headscale + Headplane）
-- 源出商店：[`WOOWTECH/Woow_HA_App_Store`](https://github.com/WOOWTECH/Woow_HA_App_Store) 的 `woow-tailscale/`（本倉是同步鏡像，非取代）
+- 集中商店：[`WOOWTECH/Woow_HA_App_Store`](https://github.com/WOOWTECH/Woow_HA_App_Store) 的 `woow-tailscale/`。**自 2026-10-06（0.1.2）起本倉是權威來源**：商店副本由同步流程從本倉單向更新，不再在商店直接修改。
 
 ## Licence
 
