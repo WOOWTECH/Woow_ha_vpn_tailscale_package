@@ -62,6 +62,8 @@ Woow_ha_vpn_tailscale_package/
 
 ## 3. 兩倉同步策略（**兩邊都是可寫的鏡像**）
 
+> **2026-10-06 決策（取代本節下方的選項 A／B）**：本倉為權威來源。`Woow_HA_App_Store/woow-tailscale` 由商店的同步流程單向更新：本倉 `main` 的 `Build`（amd64＋aarch64 實際建置）成功後，`woow-addon-sync.yml` 發布通知，商店再驗證後套用。不要再直接修改商店副本；任何修正都在本倉提交並提高版本。0.1.2 已併入商店 0.1.1 的 bind-tools 修正。
+
 依 WoowTech split-repo 慣例（見 `Woow_docker-compose split repos` 相關倉），源 monorepo `Woow_HA_App_Store` 保留、獨立 repo 為對外入口；兩邊需持續內容一致。
 
 ### 選項 A：手動雙推（第一版採用）

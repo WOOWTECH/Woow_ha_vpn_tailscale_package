@@ -1,0 +1,93 @@
+name: Build
+
+# Proves the add-on context really builds for every architecture config.yaml
+# advertises, from the same base images Supervisor uses (build.yaml), then
+# smoke-tests the installed tools. Nothing is pushed: Home Assistant builds
+# this add-on locally. Woow_HA_App_Store's registry requires this workflow to
+# have succeeded on a commit before that commit is distributed.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - tailscale/**
+      - .github/workflows/build.yml
+  pull_request:
+    paths:
+      - tailscale/**
+      - .github/workflows/build.yml
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Add-on tests
+        run: |
+          bash tailscale/tests/test-s6-layout.sh
+          bash tailscale/tests/test-reconcile-login-server.sh
+      - name: Shell syntax
+        run: |
+          set -euo pipefail
+          grep -rlE '^#!.*(bash|bashio|sh)' tailscale/rootfs tailscale/tests | while read -r f; do bash -n "$f"; done
+
+  build:
+    name: Build (${{ matrix.arch }})
+    needs: test
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Read base image and version
+        id: meta
+        env:
+          ARCH: ${{ matrix.arch }}
+        run: |
+          set -euo pipefail
+          base=$(awk -v arch="${ARCH}:" '$1 == arch { print $2 }' tailscale/build.yaml)
+          version=$(sed -n 's/^version: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' tailscale/config.yaml)
+          grep -Eq "^  - ${ARCH}\$" tailscale/config.yaml
+          test -n "${base}" && test -n "${version}"
+          echo "base=${base}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Build the add-on image (not pushed)
+        env:
+          BASE: ${{ steps.meta.outputs.base }}
+          ARCH: ${{ matrix.arch }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          docker build --pull \
+            --build-arg "BUILD_FROM=${BASE}" \
+            --build-arg "BUILD_ARCH=${ARCH}" \
+            --build-arg "BUILD_VERSION=${VERSION}" \
+            --build-arg "BUILD_REF=${GITHUB_SHA}" \
+            --build-arg "BUILD_REPOSITORY=${GITHUB_REPOSITORY}" \
+            -t local/woow-tailscale:ci tailscale
+      - name: Smoke test the built image
+        run: |
+          docker run --rm --entrypoint /bin/bash local/woow-tailscale:ci -euo pipefail -c '
+            /opt/tailscale version
+            /opt/tailscaled --version
+            dig -v
+            dnsmasq --version | head -n 1
+            nginx -v
+            apk info -e bind-tools dnsmasq ethtool ipcalc iproute2 iptables nginx coreutils networkmanager
+            test -x /usr/local/lib/woow-tailscale/reconcile-login-server
+          '
