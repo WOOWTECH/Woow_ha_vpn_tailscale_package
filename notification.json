@@ -7,11 +7,11 @@
       "name": "Woow Tailscale",
       "version": "0.1.2",
       "repository": "WOOWTECH/Woow_ha_vpn_tailscale_package",
-      "source_sha": "5f13a8e7bfc9ac499017f3b72bb624e06ccfcbcc",
+      "source_sha": "e4de0a053031c4b456819190b9c66c418a2d58d6",
       "source_path": "tailscale",
       "config_file": "config.yaml",
       "config_sha256": "sha256:69c3a76b3555810a3146f2ac6fdbdcdfe823bf26cf1f402fa636969c5bac32b7",
-      "archive_sha256": "sha256:8ab753605635c30f485aea434d119bef3ef5f3f8be40f67f6c5d3f2030a7aad9",
+      "archive_sha256": "sha256:0d80e5aa42bcb3be16752faba6fb9eb0ae94c2e56f1cdf287c562cf81eeaf930",
       "context_fingerprint": "sha256:d28568562feec7739c5e5a839b75c5111498538cfd909b14dd0b337dba61a890",
       "material_fingerprint": "sha256:95c3bd22fc16adc9f26c9ab4d8eb304ba46b9b5d9cda86937804bd514af15cf0",
       "architectures": [
@@ -144,7 +144,7 @@
       "images": {},
       "delivery": "local-source-build",
       "validation": "manifest+source-context+configured-CI (runtime build not certified)",
-      "publisher_run_id": "37437027663",
+      "publisher_run_id": "38209684488",
       "channel": "stable"
     }
   }
