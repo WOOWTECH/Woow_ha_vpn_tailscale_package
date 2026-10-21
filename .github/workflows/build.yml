@@ -13,10 +13,8 @@ on:
     paths:
       - tailscale/**
       - .github/workflows/build.yml
+  # PRs run unfiltered so the ruleset's required checks always report (release-gating #88).
   pull_request:
-    paths:
-      - tailscale/**
-      - .github/workflows/build.yml
   workflow_dispatch: {}
 
 permissions:
