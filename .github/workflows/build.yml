@@ -115,4 +115,6 @@ jobs:
     permissions:
       contents: read
       actions: read
-    uses: WOOWTECH/Woow_HA_App_Store/.github/workflows/woow-addon-upgrade-check.yml@main
+    uses: WOOWTECH/Woow_HA_App_Store/.github/workflows/woow-addon-upgrade-check.yml@registry/164-remove-tailscale-skip
+    with:
+      tooling_ref: registry/164-remove-tailscale-skip
