@@ -18,7 +18,10 @@ release mechanism is described in the Woow_HA_App_Store README (section
    mock Supervisor, then the PR's version on the same data, and fails when
    either does not start. Because of `host_network: true`, the test runs the
    addon in the runner's host network namespace, as Supervisor does, at the
-   bridge gateway `172.30.32.1` (pipeline #158). Without a `verify` hook it
+   bridge gateway `172.30.32.1` (pipeline #158). For now the Store registry skips
+   this test (pipeline #164): the v0.1.3 Release can no longer be rebuilt,
+   because Alpine dropped its pinned package versions. The skip is removed
+   once 0.1.4 is the latest Stable Release. Without a `verify` hook it
    checks startup only, not data. To check data, add hooks in
    `tailscale/upgrade-check/`: `seed` writes data on the old version, `verify`
    checks it on this PR's version. Their interface (environment, JSON report)
