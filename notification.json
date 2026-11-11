@@ -5,22 +5,22 @@
     "woow-tailscale": {
       "id": "woow-tailscale",
       "name": "Woow Tailscale",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "repository": "WOOWTECH/Woow_ha_vpn_tailscale_package",
-      "source_sha": "87345ca3b60218077bcf4d0d8b85408293e5d2fb",
+      "source_sha": "3b01860e282c983ce873f439ff5f21174ec07da9",
       "source_path": "tailscale",
       "config_file": "config.yaml",
-      "config_sha256": "sha256:6f861b86568036a2261bd8aee304a03eb427c6f3ae70fca994b48daa2a8e7a5c",
-      "archive_sha256": "sha256:0dc9f15cfcb7b7752862a1559a4290f5dcb42bb7e79092deef69ef368b1217b5",
-      "context_fingerprint": "sha256:33639533e4adfd47f3a4d4b6f703f9c1ccd8ab6a26e0fa5ce8714e61c8b29a57",
-      "material_fingerprint": "sha256:bf7be7f3af48cad5799e0039aba74c5c64c023479243e32fed9eef2a5c5d51a1",
+      "config_sha256": "sha256:fdb98c2a472c32c7b3979a580c42f42889adfa767dbbb2181027d55b02fe9c64",
+      "archive_sha256": "sha256:6e4cb86a978682623d35b40de2102982e29d82b85849554ce2e15f70e129fcbe",
+      "context_fingerprint": "sha256:4535441e8711c55cb4a049bcc050bad38a4b51aa2ee2f7513bf1ac16ef49fd2d",
+      "material_fingerprint": "sha256:f866bbffc4ecdaaa9122be15a2da290fae85fb4d1d57d58347df27dce20592fb",
       "architectures": [
         "aarch64",
         "amd64"
       ],
       "config": {
         "name": "Woow Tailscale",
-        "version": "0.1.4",
+        "version": "0.1.5",
         "slug": "woow-tailscale",
         "description": "Tailscale client for Tailscale and Headscale",
         "url": "https://github.com/WOOWTECH/Woow_ha_vpn_tailscale_package",
@@ -89,6 +89,7 @@
             "local_subnets"
           ],
           "always_use_derp": false,
+          "auth_key": "",
           "log_level": "info",
           "login_server": "https://controlplane.tailscale.com",
           "share_homeassistant": "disabled",
@@ -117,6 +118,7 @@
             "match(^(?:local_subnets|(?:(?:25[0-5]|(?:2[0-4]|1\\d|[1-9]?)\\d)\\.){3}(?:25[0-5]|(?:2[0-4]|1\\d|[1-9]?)\\d)\\/(?:3[0-2]|[12]?\\d)|[a-fA-F\\d.:]+:[a-fA-F\\d.:]+\\/(?:12[0-8]|(?:1[01]|[1-9]?)\\d))$)"
           ],
           "always_use_derp": "bool",
+          "auth_key": "password?",
           "exit_node": "match(^(?:(?:(?:25[0-5]|(?:2[0-4]|1\\d|[1-9]?)\\d)\\.){3}(?:25[0-5]|(?:2[0-4]|1\\d|[1-9]?)\\d)|[a-fA-F\\d.:]+:[a-fA-F\\d.:]+|[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}|auto:any)$)?",
           "log_level": "list(trace|debug|info|notice|warning|error|fatal)",
           "login_server": "url",
@@ -144,7 +146,7 @@
       "images": {},
       "delivery": "local-source-build",
       "validation": "manifest+source-context+configured-CI (runtime build not certified)",
-      "publisher_run_id": "42175895290",
+      "publisher_run_id": "42987881086",
       "channel": "stable"
     }
   }
