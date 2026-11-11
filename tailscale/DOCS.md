@@ -320,6 +320,9 @@ after a confirmed connection. A failed enrollment keeps the option for retry.
 Leave it empty to use the registration URL flow. Never enter a Headscale
 administrator API key here.
 
+Keep `log_level` at `info` or `debug` while this field contains a key. Bashio's
+`trace` level can print raw add-on options, including masked fields, into logs.
+
 ### Option: `share_homeassistant`
 
 This option allows you to enable Tailscale Serve or Funnel features to present

@@ -12,3 +12,4 @@ configuration:
       選填。到 Headplane「Settings → Manage Auth Keys → Create pre-auth key」
       選擇裝置歸屬者、保持 Reusable 關閉，將產生的 key 貼在此處。連線成功後
       設定會自動清除；若要走註冊網址核准流程，請留空。勿貼 Headscale 管理 API key。
+      配對期間請勿使用 trace 記錄等級，以免將設定值寫入日誌。

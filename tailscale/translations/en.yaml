@@ -66,7 +66,8 @@ configuration:
       pre-auth key for the device owner. Paste it here to pair this device with
       Headscale. The key is cleared from the add-on settings after the device
       connects. Leave it empty for the normal registration URL flow. Do not
-      paste a Headscale administrator API key here.
+      paste a Headscale administrator API key here. Avoid trace logging while
+      the field contains a key; Bashio trace logs can include raw options.
   share_homeassistant:
     name: Share Home Assistant with Serve or Funnel
     description: >-
