@@ -10,6 +10,7 @@
 - Document the Headplane owner/key GUI flow and same-server recovery.
 - For custom control servers, omit client-requested tags during login; assign
   Headscale ACL tags to the pre-auth key in Headplane instead.
+- Add Traditional Chinese labels and help text for the control URL and pairing key.
 
 ## 0.1.4
 
