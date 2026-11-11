@@ -35,6 +35,7 @@ jobs:
           bash tailscale/tests/test-s6-layout.sh
           bash tailscale/tests/test-reconcile-login-server.sh
           bash tailscale/tests/test-finish-exit-code.sh
+          bash tailscale/tests/test-headscale-pairing.sh
       - name: Shell syntax
         run: |
           set -euo pipefail
