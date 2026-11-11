@@ -8,11 +8,11 @@ Tailscale's official control plane or a Headscale-compatible control plane.
 Using Headscale does not require a Tailscale account; use the account or user
 configured by the Headscale administrator.
 
-To pair with **Woow Headscale VPN** using the Home Assistant GUI, select the
-node owner and create a one-use key in Headplane, then enter the reachable
-Headscale control URL and key in **Woow Tailscale → Configuration**. Start the
-add-on and confirm its address in **Web UI**. See [DOCS.md](DOCS.md) for the
-full steps and recovery options.
+To pair with **Woow Headscale VPN** using the Home Assistant GUI, open Headplane
+**Settings → Manage Auth Keys**, create a one-use key for the selected owner,
+then enter the reachable Headscale control URL and key in **Woow Tailscale →
+Configuration**. Start the add-on and confirm its address in **Web UI**. See
+[DOCS.md](DOCS.md) for the full steps and recovery options.
 
 > **Upstream attribution:** This WOOWTECH-maintained add-on is an
 > MIT-licensed fork of

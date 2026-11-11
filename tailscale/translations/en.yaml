@@ -62,8 +62,8 @@ configuration:
   auth_key:
     name: One-time pairing key
     description: >-
-      Optional. In Headplane, choose the device owner and create a one-use
-      pre-auth key. Paste it here to pair this Home Assistant device with
+      Optional. In Headplane Settings > Manage Auth Keys, create a one-use
+      pre-auth key for the device owner. Paste it here to pair this device with
       Headscale. The key is cleared from the add-on settings after the device
       connects. Leave it empty for the normal registration URL flow. Do not
       paste a Headscale administrator API key here.

@@ -105,8 +105,9 @@ userspace_networking: true
 ## Pair with Woow Headscale in Home Assistant
 
 1. Open **Woow Headscale VPN → Web UI** in Home Assistant. In Headplane,
-   create or select the **User** who should own this Home Assistant node.
-   Create a **one-use pre-auth key** for that user and copy it. This is a
+   create the intended owner on **Users** if needed. Go to **Settings → Manage
+   Auth Keys → Create pre-auth key**, select that owner in the **User** field,
+   leave **Reusable** off, and copy the key shown after creation. This is a
    device enrollment key, not a Headscale administrator API key.
 2. Open **Woow Tailscale → Configuration**. Set `login_server` to the
    Headscale **control URL** that this HA device can reach, for example your

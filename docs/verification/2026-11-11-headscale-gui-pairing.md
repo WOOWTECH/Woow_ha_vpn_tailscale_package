@@ -12,6 +12,7 @@
 - The pinned Tailscale 1.102.3 source accepts `--auth-key=file:<path>`; the CLI trims the file's contents.
 - A local isolated Headscale v0.29.4 plus Tailscale v1.102.3 userspace client rejected an invalid key, accepted a fresh one-use key on the same client state, reached `Running`, appeared in Headscale under the chosen owner with `100.64.0.1`, and kept that address after daemon restart. Repeated with the HA add-on's default `advertise_exit_node=true` and `advertise_connector=true` flags. Temporary keys, identity files, and logs were removed afterward.
 - The official `ghcr.io/tale/headplane:0.7.1` manifest has amd64 and arm64 variants. Its amd64 `/app/build/server/index.js` contains the exact `"mode": "lazy"` route-discovery pattern once, so the add-on's guarded ingress patch can apply.
+- Headplane v0.7.1 source confirms the GUI path **Settings → Manage Auth Keys → Create pre-auth key**. The dialog selects **User**, defaults **Reusable** to off, and displays the full key once after creation. The add-on guides were corrected to match that UI.
 
 ## Release gates still needed
 
