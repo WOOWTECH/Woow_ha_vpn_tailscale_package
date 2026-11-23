@@ -5,22 +5,22 @@
     "woow-tailscale": {
       "id": "woow-tailscale",
       "name": "Woow Tailscale",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "repository": "WOOWTECH/Woow_ha_vpn_tailscale_package",
-      "source_sha": "3b01860e282c983ce873f439ff5f21174ec07da9",
+      "source_sha": "49ede7eb400a7d49cce7beb058175ffa9c25fdb2",
       "source_path": "tailscale",
       "config_file": "config.yaml",
-      "config_sha256": "sha256:fdb98c2a472c32c7b3979a580c42f42889adfa767dbbb2181027d55b02fe9c64",
-      "archive_sha256": "sha256:6e4cb86a978682623d35b40de2102982e29d82b85849554ce2e15f70e129fcbe",
-      "context_fingerprint": "sha256:4535441e8711c55cb4a049bcc050bad38a4b51aa2ee2f7513bf1ac16ef49fd2d",
-      "material_fingerprint": "sha256:f866bbffc4ecdaaa9122be15a2da290fae85fb4d1d57d58347df27dce20592fb",
+      "config_sha256": "sha256:bad19dfa9d1c623282e9d646268fc0a8cb48fba2949436e761a0616204051054",
+      "archive_sha256": "sha256:23b5069ebbf1f2b207262d442194133694c9cbeb8d6e7823378bdb1d3a1ea625",
+      "context_fingerprint": "sha256:dbe374f23d8a43c0a24b268fe11930b522b76fd6784a4fa4bb3c8e650e083248",
+      "material_fingerprint": "sha256:298f0f526ff12da85876b313fb0bde18803bc24242f667364a503456cdc06575",
       "architectures": [
         "aarch64",
         "amd64"
       ],
       "config": {
         "name": "Woow Tailscale",
-        "version": "0.1.5",
+        "version": "0.1.6",
         "slug": "woow-tailscale",
         "description": "Tailscale client for Tailscale and Headscale",
         "url": "https://github.com/WOOWTECH/Woow_ha_vpn_tailscale_package",
@@ -146,7 +146,7 @@
       "images": {},
       "delivery": "local-source-build",
       "validation": "manifest+source-context+configured-CI (runtime build not certified)",
-      "publisher_run_id": "42987881086",
+      "publisher_run_id": "45125887305",
       "channel": "stable"
     }
   }
