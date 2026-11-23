@@ -37,6 +37,7 @@ jobs:
           bash tailscale/tests/test-finish-exit-code.sh
           bash tailscale/tests/test-headscale-pairing.sh
           bash tailscale/tests/test-login-wait-layout.sh
+          bash tailscale/tests/test-tailscaled-signal.sh
       - name: Shell syntax
         run: |
           set -euo pipefail
