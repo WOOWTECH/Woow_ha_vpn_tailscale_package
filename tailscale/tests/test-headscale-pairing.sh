@@ -67,6 +67,12 @@ case "$1" in
       fi
     done
     if [[ "${TEST_UP_FAIL:-0}" == 1 ]]; then exit 1; fi
+    if [[ -n "${TEST_UP_WAITS:-}" ]]; then
+      # Interactive login nobody completes: wait until stopped.
+      trap 'printf "TERM\n" > "$TEST_UP_WAITS/up-signal"; exit 1' TERM
+      printf '%s\n' "$$" > "$TEST_UP_WAITS/up-pid"
+      while :; do /bin/sleep 0.1; done
+    fi
     if [[ "${TEST_UP_STAYS:-0}" != 1 ]]; then
       printf 'Running\n' > "$TEST_STATE"
     fi
@@ -180,5 +186,38 @@ grep -q 'Unable to start the services that need a logged-in Tailscale' "$tmpdir/
   || fail 'failed hand-off gave no useful error'
 [[ "$(<"$tmpdir/handoff_failure/s6-rc")" == '-b -u change logged-in' ]] \
   || fail 'failed hand-off still stayed up'
+
+# Stopping the app while `tailscale up` still waits for the login: s6 sends
+# SIGTERM to the service. tailscale up must get it too (not be left running
+# until the container's final kill), the service must end by SIGTERM (so its
+# finish treats it as a normal stop), and no pairing key file may remain.
+stop_while_waiting() {
+  local name="$1" key="$2" case_dir="${tmpdir}/$1" pid status=0 i
+  mkdir -p "$case_dir"
+  printf 'NeedsLogin\n' > "$case_dir/state"
+  : > "$case_dir/argv"; : > "$case_dir/log"; : > "$case_dir/clear"; : > "$case_dir/key-files"; : > "$case_dir/s6-rc"
+  TEST_STATE="$case_dir/state" TEST_AUTH_KEY="$key" TEST_UP_WAITS="$case_dir" \
+    TEST_LOG="$case_dir/log" TEST_ARGV="$case_dir/argv" TEST_CLEAR_LOG="$case_dir/clear" \
+    TEST_KEY_FILES="$case_dir/key-files" TEST_S6RC_LOG="$case_dir/s6-rc" PATH="${tmpdir}/bin:${PATH}" \
+    BASH_ENV="${tmpdir}/bashio-stub" TAILSCALE_BIN="${tmpdir}/tailscale-stub" \
+    AUTH_KEY_RUNTIME_DIR="$case_dir" TAILSCALE_PAIRING_TIMEOUT=600 \
+    bash "$run_script" > "$case_dir/stdout" 2> "$case_dir/stderr" &
+  pid=$!
+  for i in $(seq 1 100); do [[ -s "$case_dir/up-pid" ]] && break; /bin/sleep 0.05; done
+  [[ -s "$case_dir/up-pid" ]] || fail "$name: tailscale up did not start"
+  kill -TERM "$pid"
+  wait "$pid" || status=$?
+  [[ "$status" == 143 ]] || fail "$name: service exited $status, expected death by SIGTERM (143)"
+  for i in $(seq 1 40); do [[ -s "$case_dir/up-signal" ]] && break; /bin/sleep 0.05; done
+  [[ "$(cat -- "$case_dir/up-signal" 2>/dev/null)" == TERM ]] || fail "$name: tailscale up did not get SIGTERM"
+  ! kill -0 "$(<"$case_dir/up-pid")" 2>/dev/null || fail "$name: tailscale up still running"
+  while IFS= read -r path; do
+    [[ ! -e "$path" ]] || fail "$name left temporary key file"
+  done < "$case_dir/key-files"
+  [[ ! -s "$case_dir/s6-rc" ]] || fail "$name started the logged-in bundle"
+}
+stop_while_waiting stop_interactive ''
+stop_while_waiting stop_pairing 'tskey-auth-stop-secret'
+grep -q . "$tmpdir/stop_pairing/key-files" || fail 'stop_pairing did not use a key file'
 
 printf 'PASS: Headscale pairing lifecycle\n'
